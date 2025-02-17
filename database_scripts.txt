@@ -1,0 +1,109 @@
+
+-- Student Registration and Admission Management
+
+CREATE TABLE applications (
+    application_id SERIAL PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    application_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('Pending', 'Approved', 'Rejected'))
+);
+
+CREATE TABLE payments (
+    payment_id SERIAL PRIMARY KEY,
+    application_id INTEGER NOT NULL REFERENCES applications(application_id),
+    payment_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(20) NOT NULL CHECK (payment_method IN ('Cash', 'Bank Transfer', 'Online Payment'))
+);
+
+CREATE TABLE documents (
+    document_id SERIAL PRIMARY KEY,
+    application_id INTEGER NOT NULL REFERENCES applications(application_id),
+    document_type VARCHAR(50) NOT NULL CHECK (document_type IN ('Birth Certificate', 'Transcript', 'Other')),
+    document_file BYTEA NOT NULL
+);
+
+-- Student Information System (SIS) Module
+
+CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender VARCHAR(10) NOT NULL CHECK (gender IN ('Male', 'Female', 'Other'))
+);
+
+CREATE TABLE contacts (
+    contact_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(student_id),
+    contact_name VARCHAR(100) NOT NULL,
+    contact_relationship VARCHAR(50) NOT NULL CHECK (contact_relationship IN ('Parent', 'Guardian', 'Emergency Contact')),
+    contact_phone VARCHAR(20) NOT NULL,
+    contact_email VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE medical_records (
+    medical_record_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(student_id),
+    medical_condition VARCHAR(100) NOT NULL,
+    allergy_alert VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE student_photos (
+    student_photo_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(student_id),
+    photo_file BYTEA NOT NULL
+);
+
+
+
+-- Attendance Module
+
+
+CREATE TABLE attendance (
+    attendance_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(student_id),
+    attendance_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    attendance_status VARCHAR(10) NOT NULL CHECK (attendance_status IN ('Present', 'Absent', 'Late'))
+);
+
+CREATE TABLE attendance_reports (
+    attendance_report_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(student_id),
+    report_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    attendance_status VARCHAR(10) NOT NULL CHECK (attendance_status IN ('Present', 'Absent', 'Late'))
+);
+
+
+-- Finance Module
+
+
+CREATE TABLE fees (
+    fee_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(student_id),
+    fee_type VARCHAR(50) NOT NULL CHECK (fee_type IN ('Tuition', 'Registration', 'Other')),
+    fee_amount DECIMAL(10, 2) NOT NULL,
+    due_date DATE NOT NULL
+);
+
+CREATE TABLE invoices (
+    invoice_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(student_id),
+    invoice_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    total_amount DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE payments (
+    payment_id SERIAL PRIMARY KEY,
+    invoice_id INTEGER NOT NULL REFERENCES invoices(invoice_id),
+    payment_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(20) NOT NULL CHECK (payment_method IN ('Cash', 'Bank Transfer', 'Online Payment'))
+);
+
+CREATE TABLE expenses (
+    expense_id SERIAL PRIMARY KEY,
+    expense_type VARCHAR(50) NOT NULL CHECK (expense_type IN ('Salaries', 'Utilities', 'Other')),
+    expense_amount DECIMAL(10, 2) NOT NULL,
+    expense_date DATE NOT NULL DEFAULT CURRENT_DATE
+);

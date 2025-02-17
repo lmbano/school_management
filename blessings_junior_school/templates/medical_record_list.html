@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ student.student_name }}'s Medical Records</title>
+</head>
+<body>
+    <h1>{{ student.student_name }}'s Medical Records</h1>
+    <ul>
+        {% for record in medical_records %}
+            <li>{{ record.medical_condition }} - {{ record.allergy_alert }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'student_detail' student.pk %}">Back to Student</a>
+</body>
+</html>

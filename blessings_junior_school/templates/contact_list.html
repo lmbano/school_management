@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ student.student_name }}'s Contacts</title>
+</head>
+<body>
+    <h1>{{ student.student_name }}'s Contacts</h1>
+    <ul>
+        {% for contact in contacts %}
+            <li>{{ contact.contact_name }} - {{ contact.contact_relationship }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'student_detail' student.pk %}">Back to Student</a>
+</body>
+</html>
